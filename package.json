@@ -1,0 +1,47 @@
+{
+  "name": "mailcloud-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Multi-tenant email dashboard using TanStack Start and Gmail",
+  "type": "module",
+  "main": ".output/server/index.mjs",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build && tsc --noEmit",
+    "preview": "vite preview",
+    "start": "node .output/server/index.mjs",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx src/server/database/seed.ts"
+  },
+  "dependencies": {
+    "@tanstack/react-form": "^1.33.5",
+    "@tanstack/react-router": "latest",
+    "@tanstack/react-start": "latest",
+    "argon2": "^0.41.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.45.2",
+    "nodemailer": "^9.0.6",
+    "postgres": "^3.4.5",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.3.0",
+    "tailwindcss": "^4.1.11",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "@types/node": "^22.10.5",
+    "@types/nodemailer": "^6.4.15",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "latest",
+    "drizzle-kit": "^0.30.2",
+    "nitro": "latest",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "latest"
+  }
+}
