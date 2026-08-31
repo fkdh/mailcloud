@@ -1,4 +1,4 @@
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { db } from "../database";
 import { gmailAccounts, mailSenders, tenants } from "../database/schema";
 import { decryptSecret, encryptSecret } from "../secret-crypto";
@@ -254,22 +254,49 @@ export async function getSenderCredentials(senderId: string, user: NonNullable<A
   if (!selected || selected.sender.status !== "ACTIVE" || selected.account.status !== "ACTIVE") return null;
   if (selected.sender.tenantId !== user.tenantId) return null;
 
-  const credentials = selected.account.authType === "OAUTH"
-    ? selected.account.encryptedAccessToken && selected.account.accessTokenIv && selected.account.accessTokenTag && selected.account.encryptedRefreshToken && selected.account.refreshTokenIv && selected.account.refreshTokenTag
+  return getCredentials(selected.sender, selected.account);
+}
+
+export async function getDefaultSenderCredentials(user: NonNullable<Awaited<ReturnType<typeof getSessionUser>>>) {
+  if (!user.tenantId) return null;
+
+  const result = await db.select({
+    sender: mailSenders,
+    account: gmailAccounts,
+  }).from(mailSenders)
+    .innerJoin(gmailAccounts, eq(mailSenders.gmailAccountId, gmailAccounts.id))
+    .where(and(
+      eq(mailSenders.tenantId, user.tenantId),
+      eq(mailSenders.status, "ACTIVE"),
+      eq(gmailAccounts.status, "ACTIVE"),
+    ))
+    .orderBy(desc(mailSenders.isDefault), asc(mailSenders.createdAt))
+    .limit(1);
+
+  const selected = result[0];
+  return selected ? getCredentials(selected.sender, selected.account) : null;
+}
+
+function getCredentials(sender: typeof mailSenders.$inferSelect, account: typeof gmailAccounts.$inferSelect) {
+  if (sender.status !== "ACTIVE" || account.status !== "ACTIVE") return null;
+
+  const credentials = account.authType === "OAUTH"
+    ? account.encryptedAccessToken && account.accessTokenIv && account.accessTokenTag && account.encryptedRefreshToken && account.refreshTokenIv && account.refreshTokenTag
       ? {
-          accessToken: decryptSecret(selected.account.encryptedAccessToken, selected.account.accessTokenIv, selected.account.accessTokenTag),
-          refreshToken: decryptSecret(selected.account.encryptedRefreshToken, selected.account.refreshTokenIv, selected.account.refreshTokenTag),
+          accessToken: decryptSecret(account.encryptedAccessToken, account.accessTokenIv, account.accessTokenTag),
+          refreshToken: decryptSecret(account.encryptedRefreshToken, account.refreshTokenIv, account.refreshTokenTag),
         }
       : null
-    : selected.account.encryptedAppPassword && selected.account.encryptionIv && selected.account.encryptionTag
-      ? { appPassword: decryptSecret(selected.account.encryptedAppPassword, selected.account.encryptionIv, selected.account.encryptionTag) }
+    : account.encryptedAppPassword && account.encryptionIv && account.encryptionTag
+      ? { appPassword: decryptSecret(account.encryptedAppPassword, account.encryptionIv, account.encryptionTag) }
       : null;
   if (!credentials) return null;
 
   return {
-    tenantId: selected.sender.tenantId,
-    fromEmail: selected.sender.fromEmail,
-    smtpUser: selected.account.smtpUser,
+    senderId: sender.id,
+    tenantId: sender.tenantId,
+    fromEmail: sender.fromEmail,
+    smtpUser: account.smtpUser,
     ...credentials,
   };
 }

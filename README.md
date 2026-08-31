@@ -11,6 +11,7 @@ Mailcloud adalah dashboard email multi-tenant untuk mengirim email plain text me
 - Konfigurasi Gmail menggunakan App Password atau Google OAuth.
 - Beberapa alamat sender per Gmail account.
 - Pengiriman email plain text melalui Nodemailer.
+- Public API dengan Personal Access Token untuk pengiriman email dari aplikasi eksternal.
 - Validasi input menggunakan Zod.
 - Riwayat email sukses dan gagal per tenant.
 - Dashboard analytics: jumlah email terkirim, gagal, delivery rate, dan active senders.
@@ -156,6 +157,7 @@ Health check tersedia pada `http://localhost:3000/health`.
 - `/dashboard/approvals` - approval admin baru, khusus superadmin.
 - `/dashboard/users` - daftar user lintas tenant, khusus superadmin.
 - `/dashboard/profile` - profil user aktif.
+- `/dashboard/api-access` - membuat token dan dokumentasi API pengiriman email.
 
 ## API Routes
 
@@ -178,12 +180,24 @@ Health check tersedia pada `http://localhost:3000/health`.
 | `POST` | `/api/send-email` | Mengirim email plain text |
 | `GET` | `/api/email-logs` | Daftar log email |
 | `GET` | `/api/mail-senders` | Konfigurasi Gmail dan sender |
+| `GET` | `/api/api-tokens` | Daftar API token milik user aktif |
+| `POST` | `/api/api-tokens` | Membuat API token baru |
+| `DELETE` | `/api/api-tokens/:id` | Menghapus API token |
 | `POST` | `/api/gmail-accounts` | Menambahkan Gmail account App Password |
 | `DELETE` | `/api/gmail-accounts/:id` | Menghapus Gmail account |
 | `POST` | `/api/mail-senders` | Menambahkan alamat sender |
 | `PATCH` | `/api/mail-senders/:id` | Memperbarui sender |
 | `DELETE` | `/api/mail-senders/:id` | Menghapus sender |
 | `GET` | `/api/gmail/oauth/start` | Memulai Google OAuth |
+
+### Public API
+
+Public API membutuhkan Personal Access Token dengan scope `emails:send`. Token dibuat dari halaman `/dashboard/api-access` dan hanya ditampilkan sekali setelah dibuat.
+Setiap token dibatasi hingga 30 request per menit pada endpoint pengiriman email. Response `429` menyertakan header `Retry-After` jika batas tercapai.
+
+| Method | Route | Keterangan |
+| --- | --- | --- |
+| `POST` | `/api/v1/emails/send` | Mengirim email melalui sender default atau `senderId` yang dipilih |
 
 ### Superadmin
 
@@ -211,6 +225,27 @@ curl -X POST http://localhost:3000/api/send-email \
   }'
 ```
 
+Public API menggunakan header `Authorization: Bearer` dan tidak membutuhkan session cookie. Jika `senderId` dihilangkan, Mailcloud menggunakan sender default yang aktif pada workspace.
+
+```bash
+curl -X POST https://your-mailcloud-domain.com/api/v1/emails/send \
+  -H "Authorization: Bearer mc_live_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "senderId": "sender-uuid-from-gmail-settings",
+    "to": "customer@example.com",
+    "subject": "Hello from Mailcloud",
+    "text": "This email was sent through the Mailcloud API."
+  }'
+```
+
+Body yang tersedia:
+
+- `to` wajib berupa alamat email penerima.
+- `subject` wajib diisi dan maksimal 255 karakter.
+- `text` wajib diisi dan maksimal 100.000 karakter.
+- `senderId` opsional berupa UUID sender aktif. ID tersebut dapat disalin dari halaman `/dashboard/api-access`. Jika tidak dikirim, sender default digunakan.
+
 ## Struktur Proyek
 
 ```text
@@ -232,10 +267,13 @@ drizzle/            PostgreSQL migrations
 - `tenantId` ditentukan dari session server, bukan dari request client.
 - App Password dan token OAuth tidak dikembalikan ke client.
 - OAuth memakai state one-time untuk perlindungan CSRF.
+- API token disimpan sebagai hash SHA-256, hanya token mentah saat pembuatan yang ditampilkan.
+- API token dapat dihapus dari halaman API Access & Integrations.
+- Endpoint API pengiriman email dibatasi 30 request per menit per token.
 
 ## Status dan Batasan
 
-Mailcloud saat ini berfokus pada MVP pengiriman email plain text. Fitur yang belum tersedia antara lain email HTML/template, attachment, queue pengiriman, retry otomatis, rate limiting, forgot password, dan deployment automation.
+Mailcloud saat ini berfokus pada MVP pengiriman email plain text. Fitur yang belum tersedia antara lain email HTML/template, attachment, queue pengiriman, retry otomatis, forgot password, dan deployment automation.
 
 ## Lisensi
 

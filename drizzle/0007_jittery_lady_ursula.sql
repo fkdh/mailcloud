@@ -1,0 +1,2 @@
+ALTER TABLE "api_tokens" ADD COLUMN "rate_limit_window_start" timestamp with time zone DEFAULT now() NOT NULL;--> statement-breakpoint
+ALTER TABLE "api_tokens" ADD COLUMN "rate_limit_count" integer DEFAULT 0 NOT NULL;

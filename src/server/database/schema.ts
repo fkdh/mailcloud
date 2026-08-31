@@ -39,6 +39,7 @@ export const mailSenderStatusEnum = pgEnum("mail_sender_status", [
   "ACTIVE",
   "DISABLED",
 ]);
+export const apiTokenScopeEnum = pgEnum("api_token_scope", ["EMAILS_SEND"]);
 
 export const tenants = pgTable(
   "tenants",
@@ -89,6 +90,32 @@ export const sessions = pgTable(
     tokenUnique: uniqueIndex("sessions_token_hash_unique").on(table.tokenHash),
     userIndex: index("sessions_user_id_idx").on(table.userId),
     expiresIndex: index("sessions_expires_at_idx").on(table.expiresAt),
+  }),
+);
+
+export const apiTokens = pgTable(
+  "api_tokens",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => tenants.id, { onDelete: "cascade" }),
+    name: varchar("name", { length: 120 }).notNull(),
+    tokenPrefix: varchar("token_prefix", { length: 24 }).notNull(),
+    tokenHash: varchar("token_hash", { length: 64 }).notNull(),
+    scope: apiTokenScopeEnum("scope").default("EMAILS_SEND").notNull(),
+    rateLimitWindowStart: timestamp("rate_limit_window_start", { withTimezone: true }).defaultNow().notNull(),
+    rateLimitCount: integer("rate_limit_count").default(0).notNull(),
+    lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    tokenUnique: uniqueIndex("api_tokens_token_hash_unique").on(table.tokenHash),
+    userIndex: index("api_tokens_user_id_idx").on(table.userId),
+    tenantIndex: index("api_tokens_tenant_id_idx").on(table.tenantId),
   }),
 );
 
@@ -203,3 +230,5 @@ export type GmailAccount = typeof gmailAccounts.$inferSelect;
 export type NewGmailAccount = typeof gmailAccounts.$inferInsert;
 export type MailSender = typeof mailSenders.$inferSelect;
 export type NewMailSender = typeof mailSenders.$inferInsert;
+export type ApiToken = typeof apiTokens.$inferSelect;
+export type NewApiToken = typeof apiTokens.$inferInsert;

@@ -43,6 +43,27 @@
       "when": 1788157018681,
       "tag": "0005_fantastic_chat",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1788164164996,
+      "tag": "0006_lucky_lockjaw",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1788165214259,
+      "tag": "0007_jittery_lady_ursula",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1788166296128,
+      "tag": "0008_gray_orphan",
+      "breakpoints": true
     }
   ]
 }

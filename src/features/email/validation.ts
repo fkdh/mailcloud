@@ -11,4 +11,12 @@ export const sendEmailSchema = z.object({
   text: messageSchema,
 });
 
+export const apiSendEmailSchema = z.object({
+  senderId: z.string().uuid("senderId tidak valid").optional(),
+  to: recipientSchema,
+  subject: subjectSchema,
+  text: messageSchema,
+});
+
 export type SendEmailInput = z.infer<typeof sendEmailSchema>;
+export type ApiSendEmailInput = z.infer<typeof apiSendEmailSchema>;

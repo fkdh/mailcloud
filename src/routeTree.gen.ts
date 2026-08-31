@@ -14,6 +14,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ApiApiTokensRouteImport } from './routes/api/api-tokens'
 import { Route as ApiDashboardAnalyticsRouteImport } from './routes/api/dashboard-analytics'
 import { Route as ApiEmailLogsRouteImport } from './routes/api/email-logs'
 import { Route as ApiGmailAccountsRouteImport } from './routes/api/gmail-accounts'
@@ -24,6 +25,7 @@ import { Route as ApiMeRouteImport } from './routes/api/me'
 import { Route as ApiRegisterRouteImport } from './routes/api/register'
 import { Route as ApiSendEmailRouteImport } from './routes/api/send-email'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardApiAccessRouteImport } from './routes/dashboard/api-access'
 import { Route as DashboardApprovalsRouteImport } from './routes/dashboard/approvals'
 import { Route as DashboardEmailLogsRouteImport } from './routes/dashboard/email-logs'
 import { Route as DashboardProfileRouteImport } from './routes/dashboard/profile'
@@ -32,11 +34,13 @@ import { Route as DashboardSendersRouteImport } from './routes/dashboard/senders
 import { Route as DashboardUsersRouteImport } from './routes/dashboard/users'
 import { Route as ApiAdminApprovalsRouteImport } from './routes/api/admin.approvals'
 import { Route as ApiAdminUsersRouteImport } from './routes/api/admin.users'
+import { Route as ApiApiTokensIdRouteImport } from './routes/api/api-tokens/$id'
 import { Route as ApiGmailAccountsIdRouteImport } from './routes/api/gmail-accounts/$id'
 import { Route as ApiMailSendersIdRouteImport } from './routes/api/mail-senders/$id'
 import { Route as ApiAdminUsersIdRouteImport } from './routes/api/admin.users/$id'
 import { Route as ApiGmailOauthCallbackRouteImport } from './routes/api/gmail.oauth.callback'
 import { Route as ApiGmailOauthStartRouteImport } from './routes/api/gmail.oauth.start'
+import { Route as ApiV1EmailsSendRouteImport } from './routes/api/v1/emails/send'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -61,6 +65,11 @@ const LoginRoute = LoginRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiApiTokensRoute = ApiApiTokensRouteImport.update({
+  id: '/api/api-tokens',
+  path: '/api/api-tokens',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiDashboardAnalyticsRoute = ApiDashboardAnalyticsRouteImport.update({
@@ -113,6 +122,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardApiAccessRoute = DashboardApiAccessRouteImport.update({
+  id: '/api-access',
+  path: '/api-access',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardApprovalsRoute = DashboardApprovalsRouteImport.update({
   id: '/approvals',
   path: '/approvals',
@@ -153,6 +167,11 @@ const ApiAdminUsersRoute = ApiAdminUsersRouteImport.update({
   path: '/api/admin/users',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiApiTokensIdRoute = ApiApiTokensIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiApiTokensRoute,
+} as any)
 const ApiGmailAccountsIdRoute = ApiGmailAccountsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -178,6 +197,11 @@ const ApiGmailOauthStartRoute = ApiGmailOauthStartRouteImport.update({
   path: '/api/gmail/oauth/start',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1EmailsSendRoute = ApiV1EmailsSendRouteImport.update({
+  id: '/api/v1/emails/send',
+  path: '/api/v1/emails/send',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -185,6 +209,7 @@ export interface FileRoutesByFullPath {
   '/health': typeof HealthRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/api/api-tokens': typeof ApiApiTokensRouteWithChildren
   '/api/dashboard-analytics': typeof ApiDashboardAnalyticsRoute
   '/api/email-logs': typeof ApiEmailLogsRoute
   '/api/gmail-accounts': typeof ApiGmailAccountsRouteWithChildren
@@ -194,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/api/me': typeof ApiMeRoute
   '/api/register': typeof ApiRegisterRoute
   '/api/send-email': typeof ApiSendEmailRoute
+  '/dashboard/api-access': typeof DashboardApiAccessRoute
   '/dashboard/approvals': typeof DashboardApprovalsRoute
   '/dashboard/email-logs': typeof DashboardEmailLogsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -203,17 +229,20 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof DashboardIndexRoute
   '/api/admin/approvals': typeof ApiAdminApprovalsRoute
   '/api/admin/users': typeof ApiAdminUsersRouteWithChildren
+  '/api/api-tokens/$id': typeof ApiApiTokensIdRoute
   '/api/gmail-accounts/$id': typeof ApiGmailAccountsIdRoute
   '/api/mail-senders/$id': typeof ApiMailSendersIdRoute
   '/api/admin/users/$id': typeof ApiAdminUsersIdRoute
   '/api/gmail/oauth/callback': typeof ApiGmailOauthCallbackRoute
   '/api/gmail/oauth/start': typeof ApiGmailOauthStartRoute
+  '/api/v1/emails/send': typeof ApiV1EmailsSendRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/health': typeof HealthRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/api/api-tokens': typeof ApiApiTokensRouteWithChildren
   '/api/dashboard-analytics': typeof ApiDashboardAnalyticsRoute
   '/api/email-logs': typeof ApiEmailLogsRoute
   '/api/gmail-accounts': typeof ApiGmailAccountsRouteWithChildren
@@ -223,6 +252,7 @@ export interface FileRoutesByTo {
   '/api/me': typeof ApiMeRoute
   '/api/register': typeof ApiRegisterRoute
   '/api/send-email': typeof ApiSendEmailRoute
+  '/dashboard/api-access': typeof DashboardApiAccessRoute
   '/dashboard/approvals': typeof DashboardApprovalsRoute
   '/dashboard/email-logs': typeof DashboardEmailLogsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -232,11 +262,13 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/api/admin/approvals': typeof ApiAdminApprovalsRoute
   '/api/admin/users': typeof ApiAdminUsersRouteWithChildren
+  '/api/api-tokens/$id': typeof ApiApiTokensIdRoute
   '/api/gmail-accounts/$id': typeof ApiGmailAccountsIdRoute
   '/api/mail-senders/$id': typeof ApiMailSendersIdRoute
   '/api/admin/users/$id': typeof ApiAdminUsersIdRoute
   '/api/gmail/oauth/callback': typeof ApiGmailOauthCallbackRoute
   '/api/gmail/oauth/start': typeof ApiGmailOauthStartRoute
+  '/api/v1/emails/send': typeof ApiV1EmailsSendRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -245,6 +277,7 @@ export interface FileRoutesById {
   '/health': typeof HealthRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/api/api-tokens': typeof ApiApiTokensRouteWithChildren
   '/api/dashboard-analytics': typeof ApiDashboardAnalyticsRoute
   '/api/email-logs': typeof ApiEmailLogsRoute
   '/api/gmail-accounts': typeof ApiGmailAccountsRouteWithChildren
@@ -254,6 +287,7 @@ export interface FileRoutesById {
   '/api/me': typeof ApiMeRoute
   '/api/register': typeof ApiRegisterRoute
   '/api/send-email': typeof ApiSendEmailRoute
+  '/dashboard/api-access': typeof DashboardApiAccessRoute
   '/dashboard/approvals': typeof DashboardApprovalsRoute
   '/dashboard/email-logs': typeof DashboardEmailLogsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -263,11 +297,13 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/api/admin/approvals': typeof ApiAdminApprovalsRoute
   '/api/admin/users': typeof ApiAdminUsersRouteWithChildren
+  '/api/api-tokens/$id': typeof ApiApiTokensIdRoute
   '/api/gmail-accounts/$id': typeof ApiGmailAccountsIdRoute
   '/api/mail-senders/$id': typeof ApiMailSendersIdRoute
   '/api/admin/users/$id': typeof ApiAdminUsersIdRoute
   '/api/gmail/oauth/callback': typeof ApiGmailOauthCallbackRoute
   '/api/gmail/oauth/start': typeof ApiGmailOauthStartRoute
+  '/api/v1/emails/send': typeof ApiV1EmailsSendRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -277,6 +313,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/login'
     | '/register'
+    | '/api/api-tokens'
     | '/api/dashboard-analytics'
     | '/api/email-logs'
     | '/api/gmail-accounts'
@@ -286,6 +323,7 @@ export interface FileRouteTypes {
     | '/api/me'
     | '/api/register'
     | '/api/send-email'
+    | '/dashboard/api-access'
     | '/dashboard/approvals'
     | '/dashboard/email-logs'
     | '/dashboard/profile'
@@ -295,17 +333,20 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/api/admin/approvals'
     | '/api/admin/users'
+    | '/api/api-tokens/$id'
     | '/api/gmail-accounts/$id'
     | '/api/mail-senders/$id'
     | '/api/admin/users/$id'
     | '/api/gmail/oauth/callback'
     | '/api/gmail/oauth/start'
+    | '/api/v1/emails/send'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/health'
     | '/login'
     | '/register'
+    | '/api/api-tokens'
     | '/api/dashboard-analytics'
     | '/api/email-logs'
     | '/api/gmail-accounts'
@@ -315,6 +356,7 @@ export interface FileRouteTypes {
     | '/api/me'
     | '/api/register'
     | '/api/send-email'
+    | '/dashboard/api-access'
     | '/dashboard/approvals'
     | '/dashboard/email-logs'
     | '/dashboard/profile'
@@ -324,11 +366,13 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/api/admin/approvals'
     | '/api/admin/users'
+    | '/api/api-tokens/$id'
     | '/api/gmail-accounts/$id'
     | '/api/mail-senders/$id'
     | '/api/admin/users/$id'
     | '/api/gmail/oauth/callback'
     | '/api/gmail/oauth/start'
+    | '/api/v1/emails/send'
   id:
     | '__root__'
     | '/'
@@ -336,6 +380,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/login'
     | '/register'
+    | '/api/api-tokens'
     | '/api/dashboard-analytics'
     | '/api/email-logs'
     | '/api/gmail-accounts'
@@ -345,6 +390,7 @@ export interface FileRouteTypes {
     | '/api/me'
     | '/api/register'
     | '/api/send-email'
+    | '/dashboard/api-access'
     | '/dashboard/approvals'
     | '/dashboard/email-logs'
     | '/dashboard/profile'
@@ -354,11 +400,13 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/api/admin/approvals'
     | '/api/admin/users'
+    | '/api/api-tokens/$id'
     | '/api/gmail-accounts/$id'
     | '/api/mail-senders/$id'
     | '/api/admin/users/$id'
     | '/api/gmail/oauth/callback'
     | '/api/gmail/oauth/start'
+    | '/api/v1/emails/send'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -367,6 +415,7 @@ export interface RootRouteChildren {
   HealthRoute: typeof HealthRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  ApiApiTokensRoute: typeof ApiApiTokensRouteWithChildren
   ApiDashboardAnalyticsRoute: typeof ApiDashboardAnalyticsRoute
   ApiEmailLogsRoute: typeof ApiEmailLogsRoute
   ApiGmailAccountsRoute: typeof ApiGmailAccountsRouteWithChildren
@@ -380,6 +429,7 @@ export interface RootRouteChildren {
   ApiAdminUsersRoute: typeof ApiAdminUsersRouteWithChildren
   ApiGmailOauthCallbackRoute: typeof ApiGmailOauthCallbackRoute
   ApiGmailOauthStartRoute: typeof ApiGmailOauthStartRoute
+  ApiV1EmailsSendRoute: typeof ApiV1EmailsSendRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -417,6 +467,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/api-tokens': {
+      id: '/api/api-tokens'
+      path: '/api/api-tokens'
+      fullPath: '/api/api-tokens'
+      preLoaderRoute: typeof ApiApiTokensRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/dashboard-analytics': {
@@ -489,6 +546,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/api-access': {
+      id: '/dashboard/api-access'
+      path: '/api-access'
+      fullPath: '/dashboard/api-access'
+      preLoaderRoute: typeof DashboardApiAccessRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/approvals': {
       id: '/dashboard/approvals'
       path: '/approvals'
@@ -545,6 +609,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAdminUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/api-tokens/$id': {
+      id: '/api/api-tokens/$id'
+      path: '/$id'
+      fullPath: '/api/api-tokens/$id'
+      preLoaderRoute: typeof ApiApiTokensIdRouteImport
+      parentRoute: typeof ApiApiTokensRoute
+    }
     '/api/gmail-accounts/$id': {
       id: '/api/gmail-accounts/$id'
       path: '/$id'
@@ -580,10 +651,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiGmailOauthStartRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/emails/send': {
+      id: '/api/v1/emails/send'
+      path: '/api/v1/emails/send'
+      fullPath: '/api/v1/emails/send'
+      preLoaderRoute: typeof ApiV1EmailsSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface DashboardRouteChildren {
+  DashboardApiAccessRoute: typeof DashboardApiAccessRoute
   DashboardApprovalsRoute: typeof DashboardApprovalsRoute
   DashboardEmailLogsRoute: typeof DashboardEmailLogsRoute
   DashboardProfileRoute: typeof DashboardProfileRoute
@@ -594,6 +673,7 @@ interface DashboardRouteChildren {
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardApiAccessRoute: DashboardApiAccessRoute,
   DashboardApprovalsRoute: DashboardApprovalsRoute,
   DashboardEmailLogsRoute: DashboardEmailLogsRoute,
   DashboardProfileRoute: DashboardProfileRoute,
@@ -605,6 +685,18 @@ const DashboardRouteChildren: DashboardRouteChildren = {
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
   DashboardRouteChildren,
+)
+
+interface ApiApiTokensRouteChildren {
+  ApiApiTokensIdRoute: typeof ApiApiTokensIdRoute
+}
+
+const ApiApiTokensRouteChildren: ApiApiTokensRouteChildren = {
+  ApiApiTokensIdRoute: ApiApiTokensIdRoute,
+}
+
+const ApiApiTokensRouteWithChildren = ApiApiTokensRoute._addFileChildren(
+  ApiApiTokensRouteChildren,
 )
 
 interface ApiGmailAccountsRouteChildren {
@@ -648,6 +740,7 @@ const rootRouteChildren: RootRouteChildren = {
   HealthRoute: HealthRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  ApiApiTokensRoute: ApiApiTokensRouteWithChildren,
   ApiDashboardAnalyticsRoute: ApiDashboardAnalyticsRoute,
   ApiEmailLogsRoute: ApiEmailLogsRoute,
   ApiGmailAccountsRoute: ApiGmailAccountsRouteWithChildren,
@@ -661,6 +754,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAdminUsersRoute: ApiAdminUsersRouteWithChildren,
   ApiGmailOauthCallbackRoute: ApiGmailOauthCallbackRoute,
   ApiGmailOauthStartRoute: ApiGmailOauthStartRoute,
+  ApiV1EmailsSendRoute: ApiV1EmailsSendRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
