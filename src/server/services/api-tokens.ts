@@ -1,4 +1,4 @@
-import { and, asc, eq, lt, lte, or, sql } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
 import { db } from "../database";
@@ -7,8 +7,6 @@ import { getSessionUser, hashToken, unauthorizedResponse, forbiddenResponse, typ
 
 export const EMAILS_SEND_SCOPE = "emails:send" as const;
 const tokenPrefix = "mc_live_";
-export const API_RATE_LIMIT = 30;
-const rateLimitWindowMs = 60 * 1000;
 
 const createApiTokenSchema = z.object({
   name: z.string().trim().min(1, "Nama token wajib diisi").max(120, "Nama token terlalu panjang").default("Email sending token"),
@@ -17,7 +15,6 @@ const createApiTokenSchema = z.object({
 export type ApiTokenAuth = {
   token: ApiToken;
   user: AuthUser;
-  rateLimitExceeded: boolean;
 };
 
 function bearerToken(request: Request) {
@@ -46,27 +43,9 @@ export async function getApiTokenAuth(request: Request): Promise<ApiTokenAuth | 
   const selected = result[0];
   if (!selected) return null;
 
-  const now = new Date();
-  const windowCutoff = new Date(now.getTime() - rateLimitWindowMs);
-  const windowCutoffIso = windowCutoff.toISOString();
-  const nowIso = now.toISOString();
-  const windowExpired = lte(apiTokens.rateLimitWindowStart, windowCutoff);
-  const usage = await db.update(apiTokens)
-    .set({
-      lastUsedAt: now,
-      rateLimitWindowStart: sql`CASE WHEN ${apiTokens.rateLimitWindowStart} <= ${windowCutoffIso} THEN ${nowIso} ELSE ${apiTokens.rateLimitWindowStart} END`,
-      rateLimitCount: sql`CASE WHEN ${apiTokens.rateLimitWindowStart} <= ${windowCutoffIso} THEN 1 ELSE ${apiTokens.rateLimitCount} + 1 END`,
-    })
-    .where(and(
-      eq(apiTokens.id, selected.token.id),
-      or(windowExpired, lt(apiTokens.rateLimitCount, API_RATE_LIMIT)),
-    ))
-    .returning({ rateLimitCount: apiTokens.rateLimitCount });
-
   return {
     token: selected.token,
     user: { ...selected.user, tenant: selected.tenant },
-    rateLimitExceeded: usage.length === 0,
   };
 }
 
@@ -78,20 +57,12 @@ export function insufficientApiTokenScopeResponse() {
   return Response.json({ message: "API token tidak memiliki scope emails:send" }, { status: 403 });
 }
 
-export function apiRateLimitResponse() {
-  return Response.json(
-    { message: `Rate limit tercapai. Maksimal ${API_RATE_LIMIT} request per menit per token.` },
-    { status: 429, headers: { "Retry-After": "60" } },
-  );
-}
-
 function tokenSummary(token: ApiToken) {
   return {
     id: token.id,
     name: token.name,
     prefix: token.tokenPrefix,
     scope: EMAILS_SEND_SCOPE,
-    lastUsedAt: token.lastUsedAt,
     createdAt: token.createdAt,
   };
 }

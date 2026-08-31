@@ -193,7 +193,6 @@ Health check tersedia pada `http://localhost:3000/health`.
 ### Public API
 
 Public API membutuhkan Personal Access Token dengan scope `emails:send`. Token dibuat dari halaman `/dashboard/api-access` dan hanya ditampilkan sekali setelah dibuat.
-Setiap token dibatasi hingga 30 request per menit pada endpoint pengiriman email. Response `429` menyertakan header `Retry-After` jika batas tercapai.
 
 | Method | Route | Keterangan |
 | --- | --- | --- |

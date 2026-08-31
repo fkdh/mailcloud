@@ -81,7 +81,6 @@ Membangun aplikasi admin untuk mengirim email plain text melalui Gmail SMTP dan 
 - [x] Tambahkan validasi `to`, `subject`, dan `text` menggunakan Zod.
 - [x] Simpan riwayat pengiriman ke `email_logs`.
 - [x] Tampilkan status berhasil atau gagal pada UI.
-- [ ] Tambahkan rate limit untuk pengiriman email.
 - [x] Tambahkan konfigurasi Gmail account dan sender per tenant.
 
 ### 6. Dashboard UI

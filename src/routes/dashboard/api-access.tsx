@@ -15,7 +15,6 @@ type ApiToken = {
   name: string;
   prefix: string;
   scope: string;
-  lastUsedAt: string | null;
   createdAt: string;
 };
 
@@ -159,7 +158,6 @@ function ApiAccessPage() {
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                 <Badge variant="secondary">{token.scope}</Badge>
                 <span>Created {formatDate(token.createdAt)}</span>
-                {token.lastUsedAt && <span>Last used {formatDate(token.lastUsedAt)}</span>}
               </div>
             </div>
             <Button type="button" variant="destructive" size="sm" onClick={() => setDeleteTarget(token)}>Delete</Button>
@@ -171,7 +169,7 @@ function ApiAccessPage() {
     <Card>
       <CardHeader>
         <CardTitle>Send an email</CardTitle>
-        <CardDescription>Use your workspace's default active sender, or include a specific sender ID. Each token can make up to 30 requests per minute.</CardDescription>
+        <CardDescription>Use your workspace's default active sender, or include a specific sender ID.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5 text-sm">
         <div>

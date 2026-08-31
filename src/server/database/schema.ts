@@ -107,9 +107,6 @@ export const apiTokens = pgTable(
     tokenPrefix: varchar("token_prefix", { length: 24 }).notNull(),
     tokenHash: varchar("token_hash", { length: 64 }).notNull(),
     scope: apiTokenScopeEnum("scope").default("EMAILS_SEND").notNull(),
-    rateLimitWindowStart: timestamp("rate_limit_window_start", { withTimezone: true }).defaultNow().notNull(),
-    rateLimitCount: integer("rate_limit_count").default(0).notNull(),
-    lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({

@@ -5,7 +5,7 @@ import { forbiddenResponse, getSessionUser, unauthorizedResponse } from "../auth
 import { sendTextEmail } from "./mailer";
 import { apiSendEmailSchema, sendEmailSchema } from "../../features/email/validation";
 import { getDefaultSenderCredentials, getSenderCredentials } from "./mail-senders";
-import { apiRateLimitResponse, getApiTokenAuth, insufficientApiTokenScopeResponse, invalidApiTokenResponse } from "./api-tokens";
+import { getApiTokenAuth, insufficientApiTokenScopeResponse, invalidApiTokenResponse } from "./api-tokens";
 
 export async function handleSendEmail(request: Request) {
   let input: { senderId: string; to: string; subject: string; text: string } | undefined;
@@ -81,7 +81,6 @@ export async function handleSendEmail(request: Request) {
 export async function handleApiSendEmail(request: Request) {
   const auth = await getApiTokenAuth(request);
   if (!auth) return invalidApiTokenResponse();
-  if (auth.rateLimitExceeded) return apiRateLimitResponse();
   if (auth.token.scope !== "EMAILS_SEND") return insufficientApiTokenScopeResponse();
 
   let input: { senderId?: string; to: string; subject: string; text: string };
