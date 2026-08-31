@@ -7,7 +7,7 @@ type ToastOptions = {
   title: string;
   description?: string;
   variant?: ToastVariant;
-  duration?: number;
+  duration?: number | null;
 };
 
 type ToastItem = ToastOptions & { id: number };
@@ -30,7 +30,9 @@ function ToastProvider({ children }: { children: ReactNode }) {
     const id = Date.now() + Math.floor(Math.random() * 1000);
     const item = { ...options, id };
     setToasts((current) => [...current, item]);
-    window.setTimeout(() => dismiss(id), options.duration ?? 3500);
+    if (options.duration !== null) {
+      window.setTimeout(() => dismiss(id), options.duration ?? 3500);
+    }
     return id;
   }, [dismiss]);
 

@@ -5,7 +5,7 @@ import { getAuthenticationState } from "../features/auth/server-functions";
 export const Route = createFileRoute("/dashboard")({
   beforeLoad: async () => {
     const { authenticated } = await getAuthenticationState();
-    if (!authenticated) throw redirect({ to: "/login" });
+    if (!authenticated) throw redirect({ to: "/login", search: { activation: undefined } });
   },
   component: DashboardShell,
 });

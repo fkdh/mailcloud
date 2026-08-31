@@ -1,9 +1,11 @@
 import argon2 from "argon2";
 import { eq } from "drizzle-orm";
+import { randomBytes } from "node:crypto";
 import { db } from "../database";
-import { tenants, users } from "../database/schema";
-import { createSession } from "../auth";
+import { accountActivationTokens, tenants, users } from "../database/schema";
+import { createSession, hashToken } from "../auth";
 import { loginSchema, registerSchema } from "../../features/auth/validation";
+import { sendAccountActivationEmail, validateSystemMailConfig } from "./mailer";
 
 function slugify(value: string) {
   const slug = value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -51,25 +53,51 @@ export async function handleRegister(request: Request) {
     }
 
     const passwordHash = await argon2.hash(input.password);
+    const appUrl = process.env.APP_URL?.trim();
+    if (!appUrl) throw new Error("APP_URL is required");
+    validateSystemMailConfig();
+    const activationUrl = new URL("/api/activate", appUrl);
+    const rawActivationToken = randomBytes(32).toString("base64url");
+    activationUrl.searchParams.set("token", rawActivationToken);
 
-    await db.transaction(async (transaction) => {
+    let createdAccount: { userId: string; tenantId: string };
+
+    createdAccount = await db.transaction(async (transaction) => {
       const [tenant] = await transaction.insert(tenants).values({
         name: input.tenantName,
         slug: slugify(input.tenantName),
         status: "PENDING",
       }).returning({ id: tenants.id });
 
-      await transaction.insert(users).values({
+      const [user] = await transaction.insert(users).values({
         name: input.name,
         email: input.email,
         passwordHash,
         role: "ADMIN",
         tenantId: tenant.id,
         status: "PENDING",
+      }).returning({ id: users.id });
+
+      await transaction.insert(accountActivationTokens).values({
+        userId: user.id,
+        tokenHash: hashToken(rawActivationToken),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
       });
+
+      return { userId: user.id, tenantId: tenant.id };
     });
 
-    return Response.json({ message: "Registrasi berhasil. Tunggu persetujuan superadmin." }, { status: 201 });
+    try {
+      await sendAccountActivationEmail({ to: input.email, activationUrl: activationUrl.toString() });
+    } catch (mailError) {
+      await db.transaction(async (transaction) => {
+        await transaction.delete(users).where(eq(users.id, createdAccount.userId));
+        await transaction.delete(tenants).where(eq(tenants.id, createdAccount.tenantId));
+      });
+      throw mailError;
+    }
+
+    return Response.json({ message: "Account created. Check your email to activate your account." }, { status: 201 });
   } catch (error) {
     if (error instanceof SyntaxError || error instanceof Error && error.name === "ZodError") {
       return Response.json({ message: "Data registrasi tidak valid" }, { status: 400 });

@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { ControlledField } from "../../../components/forms/controlled-field";
 import { Button } from "../../../components/ui/button";
 import { useToast } from "../../../components/ui/toast";
@@ -32,9 +32,12 @@ function LoginForm() {
       <form.Field name="password" validators={{ onChange: loginPasswordSchema }}>
         {(field) => <ControlledField field={field} label="Password" type="password" />}
       </form.Field>
-      <form.Subscribe selector={(state) => state.isSubmitting}>
-        {(isSubmitting) => <Button type="submit" disabled={isSubmitting}>{isSubmitting ? "Signing in..." : "Sign in"}</Button>}
-      </form.Subscribe>
+      <div className="grid gap-3">
+        <form.Subscribe selector={(state) => state.isSubmitting}>
+          {(isSubmitting) => <Button type="submit" disabled={isSubmitting}>{isSubmitting ? "Signing in..." : "Sign in"}</Button>}
+        </form.Subscribe>
+        <Link className="text-center text-sm text-primary hover:underline" to="/forgot-password">Forgot password?</Link>
+      </div>
     </form>
   );
 }

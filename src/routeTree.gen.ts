@@ -11,18 +11,23 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ApiActivateRouteImport } from './routes/api/activate'
 import { Route as ApiApiTokensRouteImport } from './routes/api/api-tokens'
 import { Route as ApiDashboardAnalyticsRouteImport } from './routes/api/dashboard-analytics'
 import { Route as ApiEmailLogsRouteImport } from './routes/api/email-logs'
+import { Route as ApiForgotPasswordRouteImport } from './routes/api/forgot-password'
 import { Route as ApiGmailAccountsRouteImport } from './routes/api/gmail-accounts'
 import { Route as ApiLoginRouteImport } from './routes/api/login'
 import { Route as ApiLogoutRouteImport } from './routes/api/logout'
 import { Route as ApiMailSendersRouteImport } from './routes/api/mail-senders'
 import { Route as ApiMeRouteImport } from './routes/api/me'
 import { Route as ApiRegisterRouteImport } from './routes/api/register'
+import { Route as ApiResetPasswordRouteImport } from './routes/api/reset-password'
 import { Route as ApiSendEmailRouteImport } from './routes/api/send-email'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardApiAccessRouteImport } from './routes/dashboard/api-access'
@@ -52,6 +57,11 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
   path: '/health',
@@ -67,6 +77,16 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiActivateRoute = ApiActivateRouteImport.update({
+  id: '/api/activate',
+  path: '/api/activate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiApiTokensRoute = ApiApiTokensRouteImport.update({
   id: '/api/api-tokens',
   path: '/api/api-tokens',
@@ -80,6 +100,11 @@ const ApiDashboardAnalyticsRoute = ApiDashboardAnalyticsRouteImport.update({
 const ApiEmailLogsRoute = ApiEmailLogsRouteImport.update({
   id: '/api/email-logs',
   path: '/api/email-logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiForgotPasswordRoute = ApiForgotPasswordRouteImport.update({
+  id: '/api/forgot-password',
+  path: '/api/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiGmailAccountsRoute = ApiGmailAccountsRouteImport.update({
@@ -110,6 +135,11 @@ const ApiMeRoute = ApiMeRouteImport.update({
 const ApiRegisterRoute = ApiRegisterRouteImport.update({
   id: '/api/register',
   path: '/api/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiResetPasswordRoute = ApiResetPasswordRouteImport.update({
+  id: '/api/reset-password',
+  path: '/api/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSendEmailRoute = ApiSendEmailRouteImport.update({
@@ -206,18 +236,23 @@ const ApiV1EmailsSendRoute = ApiV1EmailsSendRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/health': typeof HealthRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/api/activate': typeof ApiActivateRoute
   '/api/api-tokens': typeof ApiApiTokensRouteWithChildren
   '/api/dashboard-analytics': typeof ApiDashboardAnalyticsRoute
   '/api/email-logs': typeof ApiEmailLogsRoute
+  '/api/forgot-password': typeof ApiForgotPasswordRoute
   '/api/gmail-accounts': typeof ApiGmailAccountsRouteWithChildren
   '/api/login': typeof ApiLoginRoute
   '/api/logout': typeof ApiLogoutRoute
   '/api/mail-senders': typeof ApiMailSendersRouteWithChildren
   '/api/me': typeof ApiMeRoute
   '/api/register': typeof ApiRegisterRoute
+  '/api/reset-password': typeof ApiResetPasswordRoute
   '/api/send-email': typeof ApiSendEmailRoute
   '/dashboard/api-access': typeof DashboardApiAccessRoute
   '/dashboard/approvals': typeof DashboardApprovalsRoute
@@ -239,18 +274,23 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/health': typeof HealthRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/api/activate': typeof ApiActivateRoute
   '/api/api-tokens': typeof ApiApiTokensRouteWithChildren
   '/api/dashboard-analytics': typeof ApiDashboardAnalyticsRoute
   '/api/email-logs': typeof ApiEmailLogsRoute
+  '/api/forgot-password': typeof ApiForgotPasswordRoute
   '/api/gmail-accounts': typeof ApiGmailAccountsRouteWithChildren
   '/api/login': typeof ApiLoginRoute
   '/api/logout': typeof ApiLogoutRoute
   '/api/mail-senders': typeof ApiMailSendersRouteWithChildren
   '/api/me': typeof ApiMeRoute
   '/api/register': typeof ApiRegisterRoute
+  '/api/reset-password': typeof ApiResetPasswordRoute
   '/api/send-email': typeof ApiSendEmailRoute
   '/dashboard/api-access': typeof DashboardApiAccessRoute
   '/dashboard/approvals': typeof DashboardApprovalsRoute
@@ -274,18 +314,23 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/health': typeof HealthRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/api/activate': typeof ApiActivateRoute
   '/api/api-tokens': typeof ApiApiTokensRouteWithChildren
   '/api/dashboard-analytics': typeof ApiDashboardAnalyticsRoute
   '/api/email-logs': typeof ApiEmailLogsRoute
+  '/api/forgot-password': typeof ApiForgotPasswordRoute
   '/api/gmail-accounts': typeof ApiGmailAccountsRouteWithChildren
   '/api/login': typeof ApiLoginRoute
   '/api/logout': typeof ApiLogoutRoute
   '/api/mail-senders': typeof ApiMailSendersRouteWithChildren
   '/api/me': typeof ApiMeRoute
   '/api/register': typeof ApiRegisterRoute
+  '/api/reset-password': typeof ApiResetPasswordRoute
   '/api/send-email': typeof ApiSendEmailRoute
   '/dashboard/api-access': typeof DashboardApiAccessRoute
   '/dashboard/approvals': typeof DashboardApprovalsRoute
@@ -310,18 +355,23 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/forgot-password'
     | '/health'
     | '/login'
     | '/register'
+    | '/reset-password'
+    | '/api/activate'
     | '/api/api-tokens'
     | '/api/dashboard-analytics'
     | '/api/email-logs'
+    | '/api/forgot-password'
     | '/api/gmail-accounts'
     | '/api/login'
     | '/api/logout'
     | '/api/mail-senders'
     | '/api/me'
     | '/api/register'
+    | '/api/reset-password'
     | '/api/send-email'
     | '/dashboard/api-access'
     | '/dashboard/approvals'
@@ -343,18 +393,23 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/forgot-password'
     | '/health'
     | '/login'
     | '/register'
+    | '/reset-password'
+    | '/api/activate'
     | '/api/api-tokens'
     | '/api/dashboard-analytics'
     | '/api/email-logs'
+    | '/api/forgot-password'
     | '/api/gmail-accounts'
     | '/api/login'
     | '/api/logout'
     | '/api/mail-senders'
     | '/api/me'
     | '/api/register'
+    | '/api/reset-password'
     | '/api/send-email'
     | '/dashboard/api-access'
     | '/dashboard/approvals'
@@ -377,18 +432,23 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/forgot-password'
     | '/health'
     | '/login'
     | '/register'
+    | '/reset-password'
+    | '/api/activate'
     | '/api/api-tokens'
     | '/api/dashboard-analytics'
     | '/api/email-logs'
+    | '/api/forgot-password'
     | '/api/gmail-accounts'
     | '/api/login'
     | '/api/logout'
     | '/api/mail-senders'
     | '/api/me'
     | '/api/register'
+    | '/api/reset-password'
     | '/api/send-email'
     | '/dashboard/api-access'
     | '/dashboard/approvals'
@@ -412,18 +472,23 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   HealthRoute: typeof HealthRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiActivateRoute: typeof ApiActivateRoute
   ApiApiTokensRoute: typeof ApiApiTokensRouteWithChildren
   ApiDashboardAnalyticsRoute: typeof ApiDashboardAnalyticsRoute
   ApiEmailLogsRoute: typeof ApiEmailLogsRoute
+  ApiForgotPasswordRoute: typeof ApiForgotPasswordRoute
   ApiGmailAccountsRoute: typeof ApiGmailAccountsRouteWithChildren
   ApiLoginRoute: typeof ApiLoginRoute
   ApiLogoutRoute: typeof ApiLogoutRoute
   ApiMailSendersRoute: typeof ApiMailSendersRouteWithChildren
   ApiMeRoute: typeof ApiMeRoute
   ApiRegisterRoute: typeof ApiRegisterRoute
+  ApiResetPasswordRoute: typeof ApiResetPasswordRoute
   ApiSendEmailRoute: typeof ApiSendEmailRoute
   ApiAdminApprovalsRoute: typeof ApiAdminApprovalsRoute
   ApiAdminUsersRoute: typeof ApiAdminUsersRouteWithChildren
@@ -448,6 +513,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/health': {
       id: '/health'
       path: '/health'
@@ -469,6 +541,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/activate': {
+      id: '/api/activate'
+      path: '/api/activate'
+      fullPath: '/api/activate'
+      preLoaderRoute: typeof ApiActivateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/api-tokens': {
       id: '/api/api-tokens'
       path: '/api/api-tokens'
@@ -488,6 +574,13 @@ declare module '@tanstack/react-router' {
       path: '/api/email-logs'
       fullPath: '/api/email-logs'
       preLoaderRoute: typeof ApiEmailLogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/forgot-password': {
+      id: '/api/forgot-password'
+      path: '/api/forgot-password'
+      fullPath: '/api/forgot-password'
+      preLoaderRoute: typeof ApiForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/gmail-accounts': {
@@ -530,6 +623,13 @@ declare module '@tanstack/react-router' {
       path: '/api/register'
       fullPath: '/api/register'
       preLoaderRoute: typeof ApiRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/reset-password': {
+      id: '/api/reset-password'
+      path: '/api/reset-password'
+      fullPath: '/api/reset-password'
+      preLoaderRoute: typeof ApiResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/send-email': {
@@ -737,18 +837,23 @@ const ApiAdminUsersRouteWithChildren = ApiAdminUsersRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   HealthRoute: HealthRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  ApiActivateRoute: ApiActivateRoute,
   ApiApiTokensRoute: ApiApiTokensRouteWithChildren,
   ApiDashboardAnalyticsRoute: ApiDashboardAnalyticsRoute,
   ApiEmailLogsRoute: ApiEmailLogsRoute,
+  ApiForgotPasswordRoute: ApiForgotPasswordRoute,
   ApiGmailAccountsRoute: ApiGmailAccountsRouteWithChildren,
   ApiLoginRoute: ApiLoginRoute,
   ApiLogoutRoute: ApiLogoutRoute,
   ApiMailSendersRoute: ApiMailSendersRouteWithChildren,
   ApiMeRoute: ApiMeRoute,
   ApiRegisterRoute: ApiRegisterRoute,
+  ApiResetPasswordRoute: ApiResetPasswordRoute,
   ApiSendEmailRoute: ApiSendEmailRoute,
   ApiAdminApprovalsRoute: ApiAdminApprovalsRoute,
   ApiAdminUsersRoute: ApiAdminUsersRouteWithChildren,

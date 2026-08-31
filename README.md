@@ -5,6 +5,8 @@ Mailcloud adalah dashboard email multi-tenant untuk mengirim email plain text me
 ## Fitur
 
 - Login, register, logout, dan session berbasis cookie HttpOnly.
+- Reset password melalui link satu kali yang dikirim lewat email.
+- Aktivasi akun baru melalui link satu kali yang dikirim lewat email.
 - Dua role: `SUPERADMIN` dan `ADMIN`.
 - Approval admin baru oleh superadmin.
 - Isolasi data berdasarkan tenant/workspace.
@@ -51,7 +53,13 @@ Buat database PostgreSQL, lalu isi variabel environment pada `.env`.
 ```env
 PORT=3000
 DATABASE_URL=postgresql://postgres:password@localhost:5432/mailcloud
+APP_URL=http://localhost:3000
 SENDER_ENCRYPTION_KEY=base64-encoded-random-32-byte-key
+
+# Gmail SMTP account for system emails such as password reset and activation.
+MAIL_GMAIL_USER=system-mailer@gmail.com
+MAIL_FROM_EMAIL=system-mailer@gmail.com
+MAIL_GMAIL_APP_PASSWORD=your-gmail-app-password
 
 # Optional, diperlukan untuk Gmail OAuth
 GOOGLE_CLIENT_ID=your-google-client-id
@@ -70,6 +78,8 @@ openssl rand -base64 32
 ```
 
 `SENDER_ENCRYPTION_KEY` dipakai untuk mengenkripsi credential Gmail di database. Jangan mengganti key setelah credential tersimpan kecuali melakukan key rotation secara terencana.
+
+Password reset dan aktivasi akun memakai akun Gmail SMTP khusus dari `MAIL_GMAIL_USER` dengan App Password. `MAIL_FROM_EMAIL` dapat menggunakan alamat Gmail yang sama atau alamat yang sudah dikonfigurasi sebagai **Send mail as**. `APP_URL` harus berisi URL publik aplikasi agar link mengarah ke deployment yang benar.
 
 ## Database
 
@@ -149,6 +159,8 @@ Health check tersedia pada `http://localhost:3000/health`.
 ## Halaman Utama
 
 - `/login` - login user.
+- `/forgot-password` - meminta link reset password.
+- `/reset-password` - mengatur password baru dari link reset.
 - `/register` - registrasi workspace/admin.
 - `/dashboard` - overview dan analytics.
 - `/dashboard/send-email` - compose dan kirim email.
@@ -168,6 +180,9 @@ Health check tersedia pada `http://localhost:3000/health`.
 | `GET` | `/health` | Health check |
 | `POST` | `/api/register` | Registrasi admin/workspace |
 | `POST` | `/api/login` | Login |
+| `POST` | `/api/forgot-password` | Mengirim link reset password |
+| `POST` | `/api/reset-password` | Mengubah password dengan token reset |
+| `GET` | `/api/activate?token=...` | Aktivasi akun dan redirect ke login |
 | `GET` | `/api/gmail/oauth/callback` | Callback Google OAuth |
 
 ### Authenticated

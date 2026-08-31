@@ -1,6 +1,6 @@
 import { apiRequest } from "../../lib/api";
 import type { AuthResponse, CurrentUserResponse } from "./types";
-import type { LoginInput, RegisterInput } from "./validation";
+import type { ForgotPasswordInput, LoginInput, RegisterInput, ResetPasswordInput } from "./validation";
 
 export function login(input: LoginInput) {
   return apiRequest<AuthResponse>("/api/login", jsonRequest("POST", input));
@@ -8,6 +8,14 @@ export function login(input: LoginInput) {
 
 export function register(input: RegisterInput) {
   return apiRequest<AuthResponse>("/api/register", jsonRequest("POST", input));
+}
+
+export function requestPasswordReset(input: ForgotPasswordInput) {
+  return apiRequest<AuthResponse>("/api/forgot-password", jsonRequest("POST", input));
+}
+
+export function resetPassword(input: ResetPasswordInput) {
+  return apiRequest<AuthResponse>("/api/reset-password", jsonRequest("POST", input));
 }
 
 export function logout() {

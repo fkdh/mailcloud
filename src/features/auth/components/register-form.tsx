@@ -1,5 +1,4 @@
 import { useForm } from "@tanstack/react-form";
-import { useNavigate } from "@tanstack/react-router";
 import { ControlledField } from "../../../components/forms/controlled-field";
 import { Button } from "../../../components/ui/button";
 import { useToast } from "../../../components/ui/toast";
@@ -8,16 +7,19 @@ import { authEmailSchema, nameSchema, passwordSchema, registerSchema, tenantName
 
 function RegisterForm() {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const form = useForm({
     defaultValues: { name: "", tenantName: "", email: "", password: "", confirmPassword: "" } as RegisterInput,
     validators: { onSubmit: registerSchema },
     onSubmit: async ({ value }) => {
       try {
         await register(value);
-        toast({ title: "Registrasi berhasil", description: "Mengalihkan ke halaman login...", variant: "success", duration: 2500 });
+        toast({
+          title: "Account created",
+          description: `An activation link has been sent to ${value.email}. Check your inbox to activate your account.`,
+          variant: "success",
+          duration: null,
+        });
         form.reset();
-        window.setTimeout(() => { void navigate({ to: "/login" }); }, 1000);
       } catch (error) {
         const description = error instanceof Error ? error.message : "Registrasi gagal";
         toast({ title: "Registrasi gagal", description, variant: "error" });

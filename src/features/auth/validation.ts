@@ -11,6 +11,19 @@ export const loginSchema = z.object({
   password: loginPasswordSchema,
 });
 
+export const forgotPasswordSchema = z.object({
+  email: authEmailSchema,
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().trim().min(1, "Reset token wajib diisi"),
+  password: passwordSchema,
+  confirmPassword: passwordSchema,
+}).refine((value) => value.password === value.confirmPassword, {
+  path: ["confirmPassword"],
+  message: "Password dan repeat password harus sama",
+});
+
 export const registerSchema = z.object({
   name: nameSchema,
   email: authEmailSchema,
@@ -23,4 +36,6 @@ export const registerSchema = z.object({
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;

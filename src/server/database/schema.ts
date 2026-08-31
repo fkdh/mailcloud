@@ -93,6 +93,44 @@ export const sessions = pgTable(
   }),
 );
 
+export const passwordResetTokens = pgTable(
+  "password_reset_tokens",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    tokenHash: varchar("token_hash", { length: 64 }).notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    tokenUnique: uniqueIndex("password_reset_tokens_hash_unique").on(table.tokenHash),
+    userIndex: index("password_reset_tokens_user_id_idx").on(table.userId),
+    expiresIndex: index("password_reset_tokens_expires_at_idx").on(table.expiresAt),
+  }),
+);
+
+export const accountActivationTokens = pgTable(
+  "account_activation_tokens",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    tokenHash: varchar("token_hash", { length: 64 }).notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    tokenUnique: uniqueIndex("account_activation_tokens_hash_unique").on(table.tokenHash),
+    userIndex: index("account_activation_tokens_user_id_idx").on(table.userId),
+    expiresIndex: index("account_activation_tokens_expires_at_idx").on(table.expiresAt),
+  }),
+);
+
 export const apiTokens = pgTable(
   "api_tokens",
   {
@@ -221,6 +259,10 @@ export type Tenant = typeof tenants.$inferSelect;
 export type NewTenant = typeof tenants.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
+export type NewPasswordResetToken = typeof passwordResetTokens.$inferInsert;
+export type AccountActivationToken = typeof accountActivationTokens.$inferSelect;
+export type NewAccountActivationToken = typeof accountActivationTokens.$inferInsert;
 export type EmailLog = typeof emailLogs.$inferSelect;
 export type NewEmailLog = typeof emailLogs.$inferInsert;
 export type GmailAccount = typeof gmailAccounts.$inferSelect;
